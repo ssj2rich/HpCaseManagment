@@ -71,6 +71,9 @@
             this.label8 = new System.Windows.Forms.Label();
             this.rtbGroupEmailFormat = new System.Windows.Forms.RichTextBox();
             this.btnSaveEmails = new System.Windows.Forms.Button();
+            this.cbAutoPaste = new System.Windows.Forms.CheckBox();
+            this.lblRepeat = new System.Windows.Forms.Label();
+            this.lblRepeatEnd = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.pnlUserManagment.SuspendLayout();
@@ -92,7 +95,7 @@
             this.panel1.Controls.Add(this.btnUserManagment);
             this.panel1.Location = new System.Drawing.Point(13, 13);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1025, 61);
+            this.panel1.Size = new System.Drawing.Size(1114, 61);
             this.panel1.TabIndex = 0;
             // 
             // btnRunProcess
@@ -113,7 +116,7 @@
             this.pictureBox1.AccessibleName = "Settings";
             this.pictureBox1.Cursor = System.Windows.Forms.Cursors.Hand;
             this.pictureBox1.Image = global::HpCaseManagment.Properties.Resources.a1228223;
-            this.pictureBox1.Location = new System.Drawing.Point(970, 3);
+            this.pictureBox1.Location = new System.Drawing.Point(1059, 3);
             this.pictureBox1.Margin = new System.Windows.Forms.Padding(0);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(52, 55);
@@ -168,7 +171,7 @@
             this.pnlUserManagment.Controls.Add(this.label1);
             this.pnlUserManagment.Location = new System.Drawing.Point(13, 91);
             this.pnlUserManagment.Name = "pnlUserManagment";
-            this.pnlUserManagment.Size = new System.Drawing.Size(1025, 519);
+            this.pnlUserManagment.Size = new System.Drawing.Size(1114, 519);
             this.pnlUserManagment.TabIndex = 1;
             this.pnlUserManagment.Visible = false;
             // 
@@ -243,6 +246,7 @@
             this.cbAllActive.TabIndex = 6;
             this.cbAllActive.Text = "Set All Users to active";
             this.cbAllActive.UseVisualStyleBackColor = true;
+            this.cbAllActive.CheckedChanged += new System.EventHandler(this.cbAllActive_CheckedChanged);
             // 
             // cbAllGroup
             // 
@@ -254,6 +258,7 @@
             this.cbAllGroup.TabIndex = 5;
             this.cbAllGroup.Text = "Set All Users To Group Emails";
             this.cbAllGroup.UseVisualStyleBackColor = true;
+            this.cbAllGroup.CheckedChanged += new System.EventHandler(this.cbAllGroup_CheckedChanged);
             // 
             // lbUsers
             // 
@@ -418,6 +423,11 @@
             // 
             // pnlEmailLayout
             // 
+            this.pnlEmailLayout.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pnlEmailLayout.Controls.Add(this.lblRepeatEnd);
+            this.pnlEmailLayout.Controls.Add(this.lblRepeat);
+            this.pnlEmailLayout.Controls.Add(this.cbAutoPaste);
             this.pnlEmailLayout.Controls.Add(this.btnSaveEmails);
             this.pnlEmailLayout.Controls.Add(this.label8);
             this.pnlEmailLayout.Controls.Add(this.rtbGroupEmailFormat);
@@ -432,7 +442,7 @@
             this.pnlEmailLayout.Controls.Add(this.rtbEmailSingleFormat);
             this.pnlEmailLayout.Location = new System.Drawing.Point(13, 82);
             this.pnlEmailLayout.Name = "pnlEmailLayout";
-            this.pnlEmailLayout.Size = new System.Drawing.Size(1025, 525);
+            this.pnlEmailLayout.Size = new System.Drawing.Size(1115, 525);
             this.pnlEmailLayout.TabIndex = 5;
             // 
             // lblPHlastActivity
@@ -440,7 +450,7 @@
             this.lblPHlastActivity.AutoSize = true;
             this.lblPHlastActivity.Font = new System.Drawing.Font("Sitka Banner", 12F);
             this.lblPHlastActivity.ForeColor = System.Drawing.Color.OrangeRed;
-            this.lblPHlastActivity.Location = new System.Drawing.Point(740, 214);
+            this.lblPHlastActivity.Location = new System.Drawing.Point(722, 214);
             this.lblPHlastActivity.Name = "lblPHlastActivity";
             this.lblPHlastActivity.Size = new System.Drawing.Size(166, 23);
             this.lblPHlastActivity.TabIndex = 8;
@@ -453,7 +463,7 @@
             this.lblPHcaseAge.AutoSize = true;
             this.lblPHcaseAge.Font = new System.Drawing.Font("Sitka Banner", 12F);
             this.lblPHcaseAge.ForeColor = System.Drawing.Color.OrangeRed;
-            this.lblPHcaseAge.Location = new System.Drawing.Point(657, 214);
+            this.lblPHcaseAge.Location = new System.Drawing.Point(639, 214);
             this.lblPHcaseAge.Name = "lblPHcaseAge";
             this.lblPHcaseAge.Size = new System.Drawing.Size(79, 23);
             this.lblPHcaseAge.TabIndex = 7;
@@ -466,7 +476,7 @@
             this.lblPHuserTeam.AutoSize = true;
             this.lblPHuserTeam.Font = new System.Drawing.Font("Sitka Banner", 12F);
             this.lblPHuserTeam.ForeColor = System.Drawing.Color.OrangeRed;
-            this.lblPHuserTeam.Location = new System.Drawing.Point(558, 214);
+            this.lblPHuserTeam.Location = new System.Drawing.Point(540, 214);
             this.lblPHuserTeam.Name = "lblPHuserTeam";
             this.lblPHuserTeam.Size = new System.Drawing.Size(95, 23);
             this.lblPHuserTeam.TabIndex = 6;
@@ -479,7 +489,7 @@
             this.lblPHcaseId.AutoSize = true;
             this.lblPHcaseId.Font = new System.Drawing.Font("Sitka Banner", 12F);
             this.lblPHcaseId.ForeColor = System.Drawing.Color.OrangeRed;
-            this.lblPHcaseId.Location = new System.Drawing.Point(486, 214);
+            this.lblPHcaseId.Location = new System.Drawing.Point(468, 214);
             this.lblPHcaseId.Name = "lblPHcaseId";
             this.lblPHcaseId.Size = new System.Drawing.Size(68, 23);
             this.lblPHcaseId.TabIndex = 5;
@@ -492,7 +502,7 @@
             this.lblPHuserEmail.AutoSize = true;
             this.lblPHuserEmail.Font = new System.Drawing.Font("Sitka Banner", 12F);
             this.lblPHuserEmail.ForeColor = System.Drawing.Color.OrangeRed;
-            this.lblPHuserEmail.Location = new System.Drawing.Point(386, 214);
+            this.lblPHuserEmail.Location = new System.Drawing.Point(368, 214);
             this.lblPHuserEmail.Name = "lblPHuserEmail";
             this.lblPHuserEmail.Size = new System.Drawing.Size(96, 23);
             this.lblPHuserEmail.TabIndex = 4;
@@ -505,7 +515,7 @@
             this.lblPHUserName.AutoSize = true;
             this.lblPHUserName.Font = new System.Drawing.Font("Sitka Banner", 12F);
             this.lblPHUserName.ForeColor = System.Drawing.Color.OrangeRed;
-            this.lblPHUserName.Location = new System.Drawing.Point(289, 214);
+            this.lblPHUserName.Location = new System.Drawing.Point(279, 214);
             this.lblPHUserName.Name = "lblPHUserName";
             this.lblPHUserName.Size = new System.Drawing.Size(93, 23);
             this.lblPHUserName.TabIndex = 3;
@@ -543,7 +553,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.rtbEmailSingleFormat.Location = new System.Drawing.Point(27, 55);
             this.rtbEmailSingleFormat.Name = "rtbEmailSingleFormat";
-            this.rtbEmailSingleFormat.Size = new System.Drawing.Size(966, 147);
+            this.rtbEmailSingleFormat.Size = new System.Drawing.Size(1056, 147);
             this.rtbEmailSingleFormat.TabIndex = 0;
             this.rtbEmailSingleFormat.Text = "";
             this.rtbEmailSingleFormat.TextChanged += new System.EventHandler(this.rtbEmailSingleFormat_TextChanged);
@@ -567,7 +577,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.rtbGroupEmailFormat.Location = new System.Drawing.Point(23, 291);
             this.rtbGroupEmailFormat.Name = "rtbGroupEmailFormat";
-            this.rtbGroupEmailFormat.Size = new System.Drawing.Size(966, 147);
+            this.rtbGroupEmailFormat.Size = new System.Drawing.Size(1056, 147);
             this.rtbGroupEmailFormat.TabIndex = 9;
             this.rtbGroupEmailFormat.Text = "";
             this.rtbGroupEmailFormat.TextChanged += new System.EventHandler(this.rtbEmailSingleFormat_TextChanged);
@@ -584,15 +594,53 @@
             this.btnSaveEmails.UseVisualStyleBackColor = false;
             this.btnSaveEmails.Click += new System.EventHandler(this.btnSaveEmails_Click);
             // 
+            // cbAutoPaste
+            // 
+            this.cbAutoPaste.AutoSize = true;
+            this.cbAutoPaste.Checked = true;
+            this.cbAutoPaste.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbAutoPaste.Location = new System.Drawing.Point(815, 13);
+            this.cbAutoPaste.Name = "cbAutoPaste";
+            this.cbAutoPaste.Size = new System.Drawing.Size(178, 17);
+            this.cbAutoPaste.TabIndex = 12;
+            this.cbAutoPaste.Text = "Paste Placeholder when clicked";
+            this.cbAutoPaste.UseVisualStyleBackColor = true;
+            // 
+            // lblRepeat
+            // 
+            this.lblRepeat.AutoSize = true;
+            this.lblRepeat.Font = new System.Drawing.Font("Sitka Banner", 12F);
+            this.lblRepeat.ForeColor = System.Drawing.Color.DarkBlue;
+            this.lblRepeat.Location = new System.Drawing.Point(894, 214);
+            this.lblRepeat.Name = "lblRepeat";
+            this.lblRepeat.Size = new System.Drawing.Size(143, 23);
+            this.lblRepeat.TabIndex = 13;
+            this.lblRepeat.Text = "#caseRepeaterStart#";
+            this.lblRepeat.Click += new System.EventHandler(this.copyToClip_Click);
+            this.lblRepeat.MouseHover += new System.EventHandler(this.toolTipPH_MouseHover);
+            // 
+            // lblRepeatEnd
+            // 
+            this.lblRepeatEnd.AutoSize = true;
+            this.lblRepeatEnd.Font = new System.Drawing.Font("Sitka Banner", 12F);
+            this.lblRepeatEnd.ForeColor = System.Drawing.Color.DarkBlue;
+            this.lblRepeatEnd.Location = new System.Drawing.Point(894, 247);
+            this.lblRepeatEnd.Name = "lblRepeatEnd";
+            this.lblRepeatEnd.Size = new System.Drawing.Size(136, 23);
+            this.lblRepeatEnd.TabIndex = 14;
+            this.lblRepeatEnd.Text = "#caseRepeaterEnd#";
+            this.lblRepeatEnd.Click += new System.EventHandler(this.copyToClip_Click);
+            this.lblRepeatEnd.MouseHover += new System.EventHandler(this.toolTipPH_MouseHover);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.LightCyan;
-            this.ClientSize = new System.Drawing.Size(1050, 622);
-            this.Controls.Add(this.pnlEmailLayout);
+            this.ClientSize = new System.Drawing.Size(1139, 622);
             this.Controls.Add(this.pnlProcessRunning);
             this.Controls.Add(this.pnlUserManagment);
+            this.Controls.Add(this.pnlEmailLayout);
             this.Controls.Add(this.pnlSettings);
             this.Controls.Add(this.panel1);
             this.Name = "Form1";
@@ -659,6 +707,9 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.RichTextBox rtbGroupEmailFormat;
         private System.Windows.Forms.Button btnSaveEmails;
+        private System.Windows.Forms.CheckBox cbAutoPaste;
+        private System.Windows.Forms.Label lblRepeat;
+        private System.Windows.Forms.Label lblRepeatEnd;
     }
 }
 

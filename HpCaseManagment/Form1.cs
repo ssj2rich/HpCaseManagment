@@ -20,6 +20,8 @@ namespace HpCaseManagment
     {
         public bool userChanged = false;
         public bool emailLayoutChanged = false;
+        public List<User> currentUsers = new List<User>();
+        public List<Case> cases = new List<Case>();
         public Form1()
         {
             InitializeComponent();
@@ -31,18 +33,32 @@ namespace HpCaseManagment
             //send emails
             lbCases.Visible = false;
             lblSummery.Visible = false;
-            btnRunProcess_Click(null,null);
+            btnRunProcess_Click(null, null);
         }
 
         private void lbUsers_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (userChanged)
+            if (lbUsers.SelectedIndex >= 0)
             {
-                PopUpMsg popup = new PopUpMsg();
-                DialogResult res = popup.ShowDialog();
-                if (res == DialogResult.OK)
+                if (userChanged)
                 {
-                    List<User> currentUsers = loadUsers();
+                    PopUpMsg popup = new PopUpMsg();
+                    DialogResult res = popup.ShowDialog();
+                    if (res == DialogResult.OK)
+                    {
+                        currentUsers = loadUsers();
+                        tbEmail.Text = currentUsers[lbUsers.SelectedIndex].email;
+                        lblUserName.Text = currentUsers[lbUsers.SelectedIndex].userName;
+                        cbSendEmail.Checked = currentUsers[lbUsers.SelectedIndex].isActive;
+                        cbGroupEmails.Checked = currentUsers[lbUsers.SelectedIndex].isGrouppingEmails;
+                        lblTeam.Text = currentUsers[lbUsers.SelectedIndex].team;
+                        userChanged = false;
+                    }
+                    popup.Dispose();
+                }
+                else
+                {
+                    currentUsers = loadUsers();
                     tbEmail.Text = currentUsers[lbUsers.SelectedIndex].email;
                     lblUserName.Text = currentUsers[lbUsers.SelectedIndex].userName;
                     cbSendEmail.Checked = currentUsers[lbUsers.SelectedIndex].isActive;
@@ -50,19 +66,7 @@ namespace HpCaseManagment
                     lblTeam.Text = currentUsers[lbUsers.SelectedIndex].team;
                     userChanged = false;
                 }
-                popup.Dispose();
             }
-            else
-            {
-                List<User> currentUsers = loadUsers();
-                tbEmail.Text = currentUsers[lbUsers.SelectedIndex].email;
-                lblUserName.Text = currentUsers[lbUsers.SelectedIndex].userName;
-                cbSendEmail.Checked = currentUsers[lbUsers.SelectedIndex].isActive;
-                cbGroupEmails.Checked = currentUsers[lbUsers.SelectedIndex].isGrouppingEmails;
-                lblTeam.Text = currentUsers[lbUsers.SelectedIndex].team;
-                userChanged = false;
-            }
-           
 
         }
 
@@ -112,7 +116,7 @@ namespace HpCaseManagment
             pnlProcessRunning.Visible = false;
             userChanged = false;
 
-            List<User> currentUsers = loadUsers();
+            currentUsers = loadUsers();
 
             foreach (var item in currentUsers)
             {
@@ -124,7 +128,7 @@ namespace HpCaseManagment
         {
             if (emailLayoutChanged)
             {
-                 PopUpMsg popup = new PopUpMsg();
+                PopUpMsg popup = new PopUpMsg();
                 DialogResult res = popup.ShowDialog();
                 if (res != DialogResult.OK)
                 {
@@ -138,16 +142,8 @@ namespace HpCaseManagment
             pnlUserManagment.Visible = false;
             pnlProcessRunning.Visible = true;
 
-            List<User> currentUsers = new List<User>();
-            List<Case> cases = new List<Case>();
-            if (File.Exists(System.IO.Path.GetDirectoryName(Application.ExecutablePath) + "\\savedUsers.ini"))
-            {
-                //we got a users file, lets get the data
-                StreamReader sr = new StreamReader("savedUsers.ini");
-                string jsonData = sr.ReadToEnd();
-                sr.Close();
-                currentUsers = JsonConvert.DeserializeObject<List<User>>(jsonData);
-            }
+            currentUsers = loadUsers();
+            cases = new List<Case>();
 
             DataTable dt = ReadExcel(tbExcelFileLocation.Text + "\\" + tbExcelFileName.Text, ".xls");
             if (dt != null && dt.Rows.Count > 0)
@@ -290,39 +286,101 @@ namespace HpCaseManagment
             userChanged = true;
         }
 
+        public void sendEmailSingleTemplate(string to, string body)
+        {
+            var fromAddress = new MailAddress(System.Configuration.ConfigurationSettings.AppSettings["fromEmail"].ToString(), System.Configuration.ConfigurationSettings.AppSettings["fromEmailName"].ToString());
+            MailAddress toAddress = new MailAddress(to);
+            string fromPassword = System.Configuration.ConfigurationSettings.AppSettings["FromPassword"];
+
+            string subject = System.Configuration.ConfigurationSettings.AppSettings["singleEmailFormatSubject"];
+
+            var smtp = new SmtpClient
+            {
+                Host = System.Configuration.ConfigurationSettings.AppSettings["SmptIp"],
+                Port = int.Parse(System.Configuration.ConfigurationSettings.AppSettings["SmptPort"]),
+                EnableSsl = bool.Parse(System.Configuration.ConfigurationSettings.AppSettings["isSsl"]),
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                UseDefaultCredentials = false,
+                Credentials = new NetworkCredential(fromAddress.Address, fromPassword)
+            };
+            using (var message = new MailMessage(fromAddress, toAddress)
+            {
+                Subject = subject,
+                Body = body
+            })
+            {
+                smtp.Send(message);
+            }
+        }
+
         private void btnSendEmails_Click(object sender, EventArgs e)
         {
             PopUpMsgEmails popup = new PopUpMsgEmails();
             DialogResult res = popup.ShowDialog();
             if (res == DialogResult.OK)
             {
-               //send emails
+                //send emails
                 if (Convert.ToBoolean(System.Configuration.ConfigurationSettings.AppSettings["isGmail"]))
                 {
-                    var fromAddress = new MailAddress(System.Configuration.ConfigurationSettings.AppSettings["fromEmail"].ToString(), System.Configuration.ConfigurationSettings.AppSettings["fromEmailName"].ToString());
-                    MailAddress toAddress =  new MailAddress("ssj2rich@gmail.com");
-                    string fromPassword =  System.Configuration.ConfigurationSettings.AppSettings["FromPassword"];
+                    foreach (var singleUser in currentUsers)
+                    {
+                        if (!singleUser.isActive)
+                        {
+                            break;
+                        }
 
-                    string subject = System.Configuration.ConfigurationSettings.AppSettings["singleEmailFormatSubject"];
-                    string body = rtbEmailSingleFormat.Text;
+                        if (singleUser.isGrouppingEmails)
+                        {
+                            string body = rtbGroupEmailFormat.Text;
 
-                    var smtp = new SmtpClient
-                    {
-                        Host = System.Configuration.ConfigurationSettings.AppSettings["SmptIp"],
-                        Port = int.Parse(System.Configuration.ConfigurationSettings.AppSettings["SmptPort"]),
-                        EnableSsl = bool.Parse(System.Configuration.ConfigurationSettings.AppSettings["isSsl"]),
-                        DeliveryMethod = SmtpDeliveryMethod.Network,
-                        UseDefaultCredentials = false,
-                        Credentials = new NetworkCredential(fromAddress.Address, fromPassword)
-                    };
-                    using (var message = new MailMessage(fromAddress, toAddress)
-                    {
-                        Subject = subject,
-                        Body = body
-                    })
-                    {
-                        smtp.Send(message);
+                            string repeatingPart = body.Substring(body.IndexOf("#caseRepeaterStart#") + "#caseRepeaterStart#".Length, body.IndexOf("#caseRepeaterEnd#") - (body.IndexOf("#caseRepeaterStart#") + "#caseRepeaterStart#".Length));
+
+                            body = body.Replace("#userName#", singleUser.userName);
+                            body = body.Replace("#userEmail#", singleUser.email);
+                            body = body.Replace("#userTeam#", singleUser.team);
+
+                            //string repeatingPart = body.Substring(body.IndexOf("#caseRepeaterStart#") + "#caseRepeaterStart#".Length, body.IndexOf("#caseRepeaterEnd#") - (body.IndexOf("#caseRepeaterStart#") + "#caseRepeaterStart#".Length));
+
+                            string newBody = body.Substring(0, body.IndexOf("#caseRepeaterStart#"));
+                            List<Case> userCases = cases.Where(d => d.user.userName == singleUser.userName).ToList();
+                            foreach (var singleCase in userCases)
+                            {
+                                if (singleCase.user.email == singleUser.email)
+                                {
+                                    string repeatingPart1 = repeatingPart.Replace("#userName#", singleUser.userName);
+                                    repeatingPart1 = repeatingPart1.Replace("#userEmail#", singleUser.email);
+                                    repeatingPart1 = repeatingPart1.Replace("#caseId#", singleCase.caseId);
+                                    repeatingPart1 = repeatingPart1.Replace("#userTeam#", singleUser.team);
+                                    repeatingPart1 = repeatingPart1.Replace("#caseAge#", singleCase.caseAge);
+                                    repeatingPart1 = repeatingPart1.Replace("#DaysSinceLastActivity#", singleCase.daysSinceLastActivity);
+                                    newBody += repeatingPart1;
+                                }
+                            }
+                            newBody += body.Substring(body.IndexOf("#caseRepeaterEnd#") + "#caseRepeaterEnd#".Length);
+                            body = newBody;
+
+                            sendEmailSingleTemplate(singleUser.email, body);
+                            break;
+                        }
+                        else
+                        {
+                            foreach (var singleCase in cases)
+                            {
+                                string body = rtbEmailSingleFormat.Text;
+                                body = body.Replace("#userName#", singleUser.userName);
+                                body = body.Replace("#userEmail#", singleUser.email);
+                                body = body.Replace("#caseId#", singleCase.caseId);
+                                body = body.Replace("#userTeam#", singleUser.team);
+                                body = body.Replace("#caseAge#", singleCase.caseAge);
+                                body = body.Replace("#DaysSinceLastActivity#", singleCase.daysSinceLastActivity);
+                                sendEmailSingleTemplate(singleUser.email, body);
+                                break;
+
+                            }
+                        }
+                        break;
                     }
+
                 }
 
             }
@@ -346,7 +404,43 @@ namespace HpCaseManagment
 
         private void copyToClip_Click(object sender, EventArgs e)
         {
+            if ((((Label)sender).Name == "lblRepeat" || ((Label)sender).Name == "lblRepeatEnd") && this.ActiveControl.Name == "rtbEmailSingleFormat")
+            {
+                MessageBox.Show("You cant add a case repeater to the single case email layout", "", MessageBoxButtons.OK);
+                return;
+
+            }
+
+            if ((((Label)sender).Name == "lblRepeat" || ((Label)sender).Name == "lblRepeatEnd") && this.ActiveControl.Name == "rtbGroupEmailFormat")
+            {
+                if (rtbGroupEmailFormat.Text.Contains("#caseRepeaterStart#") && ((Label)sender).Name == "lblRepeat")
+                {
+                    MessageBox.Show("You can only add 1 repeater start to the layout", "", MessageBoxButtons.OK);
+                    return;
+                }
+
+                if (rtbGroupEmailFormat.Text.Contains("#caseRepeaterEnd#") && ((Label)sender).Name == "lblRepeatEnd")
+                {
+                    MessageBox.Show("You can only add 1 repeater end to the layout", "", MessageBoxButtons.OK);
+                    return;
+                }
+            }
+
             System.Windows.Forms.Clipboard.SetText(((Label)sender).Text);
+            if (this.ActiveControl.Name == "rtbEmailSingleFormat")
+            {
+
+                var selectionIndex = rtbEmailSingleFormat.SelectionStart;
+                rtbEmailSingleFormat.Text = rtbEmailSingleFormat.Text.Insert(selectionIndex, ((Label)sender).Text);
+                rtbEmailSingleFormat.SelectionStart = selectionIndex + ((Label)sender).Text.Length;
+            }
+            else if (this.ActiveControl.Name == "rtbGroupEmailFormat")
+            {
+                var selectionIndex = rtbGroupEmailFormat.SelectionStart;
+                rtbGroupEmailFormat.Text = rtbGroupEmailFormat.Text.Insert(selectionIndex, ((Label)sender).Text);
+                rtbGroupEmailFormat.SelectionStart = selectionIndex + ((Label)sender).Text.Length;
+            }
+
         }
 
         private void toolTipPH_MouseHover(object sender, EventArgs e)
@@ -363,13 +457,13 @@ namespace HpCaseManagment
         private void btnSaveEmails_Click(object sender, EventArgs e)
         {
             saveEmailLayouts();
-            
+
         }
 
         public void loadEmailLayouts()
         {
             emailLayoutChanged = false;
-            
+
             if (File.Exists(System.IO.Path.GetDirectoryName(Application.ExecutablePath) + "\\savedSingleLayout.ini"))
             {
                 //we got a users file, lets get the data
@@ -405,6 +499,55 @@ namespace HpCaseManagment
         private void rtbEmailSingleFormat_TextChanged(object sender, EventArgs e)
         {
             emailLayoutChanged = true;
+        }
+
+        private void cbAllActive_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cbAllActive.Checked)
+            {
+                foreach (var item in currentUsers)
+                {
+                    if (!string.IsNullOrEmpty(item.email))
+                    {
+                        item.isActive = true;
+                    }
+                }
+
+            }
+            else
+            {
+                foreach (var item in currentUsers)
+                {
+                    item.isActive = false;
+                }
+            }
+            saveUsers(currentUsers);
+
+            lbUsers_SelectedIndexChanged(null, null);
+        }
+
+        private void cbAllGroup_CheckedChanged(object sender, EventArgs e)
+        {
+
+            if (cbAllGroup.Checked)
+            {
+                foreach (var item in currentUsers)
+                {
+                    item.isGrouppingEmails = true;
+                }
+
+            }
+            else
+            {
+                foreach (var item in currentUsers)
+                {
+                    item.isGrouppingEmails = false;
+                }
+            }
+            saveUsers(currentUsers);
+
+            lbUsers_SelectedIndexChanged(null, null);
+
         }
     }
 }
