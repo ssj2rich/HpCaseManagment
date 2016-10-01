@@ -53,6 +53,8 @@
             this.tbExcelFileLocation = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.pnlProcessRunning = new System.Windows.Forms.Panel();
+            this.btnSendEmailsIPGManager = new System.Windows.Forms.Button();
+            this.btnSendEmailsPSGManager = new System.Windows.Forms.Button();
             this.btnSendEmails = new System.Windows.Forms.Button();
             this.lblSummery = new System.Windows.Forms.Label();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
@@ -74,8 +76,7 @@
             this.label7 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.rtbEmailSingleFormat = new System.Windows.Forms.RichTextBox();
-            this.btnSendEmailsPSGManager = new System.Windows.Forms.Button();
-            this.btnSendEmailsIPGManager = new System.Windows.Forms.Button();
+            this.btnSaveSettings = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.pnlUserManagment.SuspendLayout();
@@ -306,13 +307,14 @@
             // 
             // pnlSettings
             // 
+            this.pnlSettings.Controls.Add(this.btnSaveSettings);
             this.pnlSettings.Controls.Add(this.tbExcelFileName);
             this.pnlSettings.Controls.Add(this.label4);
             this.pnlSettings.Controls.Add(this.tbExcelFileLocation);
             this.pnlSettings.Controls.Add(this.label3);
             this.pnlSettings.Location = new System.Drawing.Point(13, 91);
             this.pnlSettings.Name = "pnlSettings";
-            this.pnlSettings.Size = new System.Drawing.Size(1025, 365);
+            this.pnlSettings.Size = new System.Drawing.Size(1025, 519);
             this.pnlSettings.TabIndex = 1;
             // 
             // tbExcelFileName
@@ -365,6 +367,32 @@
             this.pnlProcessRunning.Name = "pnlProcessRunning";
             this.pnlProcessRunning.Size = new System.Drawing.Size(1025, 522);
             this.pnlProcessRunning.TabIndex = 4;
+            // 
+            // btnSendEmailsIPGManager
+            // 
+            this.btnSendEmailsIPGManager.BackColor = System.Drawing.Color.CornflowerBlue;
+            this.btnSendEmailsIPGManager.Font = new System.Drawing.Font("Sitka Banner", 15.75F, System.Drawing.FontStyle.Bold);
+            this.btnSendEmailsIPGManager.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.btnSendEmailsIPGManager.Location = new System.Drawing.Point(564, 289);
+            this.btnSendEmailsIPGManager.Name = "btnSendEmailsIPGManager";
+            this.btnSendEmailsIPGManager.Size = new System.Drawing.Size(305, 64);
+            this.btnSendEmailsIPGManager.TabIndex = 5;
+            this.btnSendEmailsIPGManager.Text = "Send Emails To IPG Manager";
+            this.btnSendEmailsIPGManager.UseVisualStyleBackColor = false;
+            this.btnSendEmailsIPGManager.Click += new System.EventHandler(this.btnSendEmailsIPGManager_Click);
+            // 
+            // btnSendEmailsPSGManager
+            // 
+            this.btnSendEmailsPSGManager.BackColor = System.Drawing.Color.SteelBlue;
+            this.btnSendEmailsPSGManager.Font = new System.Drawing.Font("Sitka Banner", 15.75F, System.Drawing.FontStyle.Bold);
+            this.btnSendEmailsPSGManager.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.btnSendEmailsPSGManager.Location = new System.Drawing.Point(564, 208);
+            this.btnSendEmailsPSGManager.Name = "btnSendEmailsPSGManager";
+            this.btnSendEmailsPSGManager.Size = new System.Drawing.Size(305, 64);
+            this.btnSendEmailsPSGManager.TabIndex = 4;
+            this.btnSendEmailsPSGManager.Text = "Send Emails To PSG Manager";
+            this.btnSendEmailsPSGManager.UseVisualStyleBackColor = false;
+            this.btnSendEmailsPSGManager.Click += new System.EventHandler(this.btnSendEmailsPSGManager_Click);
             // 
             // btnSendEmails
             // 
@@ -623,31 +651,17 @@
             this.rtbEmailSingleFormat.Text = "";
             this.rtbEmailSingleFormat.TextChanged += new System.EventHandler(this.rtbEmailSingleFormat_TextChanged);
             // 
-            // btnSendEmailsPSGManager
+            // btnSaveSettings
             // 
-            this.btnSendEmailsPSGManager.BackColor = System.Drawing.Color.SteelBlue;
-            this.btnSendEmailsPSGManager.Font = new System.Drawing.Font("Sitka Banner", 15.75F, System.Drawing.FontStyle.Bold);
-            this.btnSendEmailsPSGManager.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.btnSendEmailsPSGManager.Location = new System.Drawing.Point(564, 208);
-            this.btnSendEmailsPSGManager.Name = "btnSendEmailsPSGManager";
-            this.btnSendEmailsPSGManager.Size = new System.Drawing.Size(305, 64);
-            this.btnSendEmailsPSGManager.TabIndex = 4;
-            this.btnSendEmailsPSGManager.Text = "Send Emails To PSG Manager";
-            this.btnSendEmailsPSGManager.UseVisualStyleBackColor = false;
-            this.btnSendEmailsPSGManager.Click += new System.EventHandler(this.btnSendEmailsPSGManager_Click);
-            // 
-            // btnSendEmailsIPGManager
-            // 
-            this.btnSendEmailsIPGManager.BackColor = System.Drawing.Color.CornflowerBlue;
-            this.btnSendEmailsIPGManager.Font = new System.Drawing.Font("Sitka Banner", 15.75F, System.Drawing.FontStyle.Bold);
-            this.btnSendEmailsIPGManager.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.btnSendEmailsIPGManager.Location = new System.Drawing.Point(564, 289);
-            this.btnSendEmailsIPGManager.Name = "btnSendEmailsIPGManager";
-            this.btnSendEmailsIPGManager.Size = new System.Drawing.Size(305, 64);
-            this.btnSendEmailsIPGManager.TabIndex = 5;
-            this.btnSendEmailsIPGManager.Text = "Send Emails To IPG Manager";
-            this.btnSendEmailsIPGManager.UseVisualStyleBackColor = false;
-            this.btnSendEmailsIPGManager.Click += new System.EventHandler(this.btnSendEmailsIPGManager_Click);
+            this.btnSaveSettings.BackColor = System.Drawing.Color.Turquoise;
+            this.btnSaveSettings.Font = new System.Drawing.Font("Sitka Banner", 15.75F, System.Drawing.FontStyle.Bold);
+            this.btnSaveSettings.Location = new System.Drawing.Point(65, 153);
+            this.btnSaveSettings.Name = "btnSaveSettings";
+            this.btnSaveSettings.Size = new System.Drawing.Size(174, 75);
+            this.btnSaveSettings.TabIndex = 4;
+            this.btnSaveSettings.Text = "Save Settings";
+            this.btnSaveSettings.UseVisualStyleBackColor = false;
+            this.btnSaveSettings.Click += new System.EventHandler(this.btnSaveSettings_Click);
             // 
             // Form1
             // 
@@ -655,10 +669,10 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.LightCyan;
             this.ClientSize = new System.Drawing.Size(1139, 622);
+            this.Controls.Add(this.pnlSettings);
             this.Controls.Add(this.pnlProcessRunning);
             this.Controls.Add(this.pnlUserManagment);
             this.Controls.Add(this.pnlEmailLayout);
-            this.Controls.Add(this.pnlSettings);
             this.Controls.Add(this.panel1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
@@ -729,6 +743,7 @@
         private System.Windows.Forms.Label lblRepeatEnd;
         private System.Windows.Forms.Button btnSendEmailsIPGManager;
         private System.Windows.Forms.Button btnSendEmailsPSGManager;
+        private System.Windows.Forms.Button btnSaveSettings;
     }
 }
 

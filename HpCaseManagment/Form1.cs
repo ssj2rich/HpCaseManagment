@@ -34,7 +34,9 @@ namespace HpCaseManagment
             //send emails
             lbCases.Visible = false;
             lblSummery.Visible = false;
+            loadSettings();
             btnRunProcess_Click(null, null);
+
         }
 
         private void lbUsers_SelectedIndexChanged(object sender, EventArgs e)
@@ -79,7 +81,8 @@ namespace HpCaseManagment
 
         private void pictureBox1_Click(object sender, EventArgs e)
         {
-            //load settings
+            
+
             if (emailLayoutChanged)
             {
                 PopUpMsg popup = new PopUpMsg();
@@ -89,6 +92,7 @@ namespace HpCaseManagment
                     return;
                 }
             }
+            loadSettings();
             emailLayoutChanged = false;
             loadEmailLayouts();
             pnlEmailLayout.Visible = false;
@@ -543,7 +547,7 @@ namespace HpCaseManagment
                 {
                     if (!singleUser.isActive)
                     {
-                        break;
+                        continue;
                     }
                     string repeatingPart = repeatingPartTemplate;
                     string newBody = rtbGroupEmailFormat.Text.Substring(0, rtbGroupEmailFormat.Text.IndexOf("#caseRepeaterStart#"));
@@ -610,7 +614,7 @@ namespace HpCaseManagment
                 {
                     if (!singleUser.isActive)
                     {
-                        break;
+                        continue;
                     }
                     string repeatingPart = repeatingPartTemplate;
                     string newBody = rtbGroupEmailFormat.Text.Substring(0, rtbGroupEmailFormat.Text.IndexOf("#caseRepeaterStart#"));
@@ -673,7 +677,7 @@ namespace HpCaseManagment
                 {
                     if (!singleUser.isActive)
                     {
-                        break;
+                        continue;
                     }
 
                     if (singleUser.isGrouppingEmails)
@@ -775,6 +779,37 @@ namespace HpCaseManagment
 
             }
             popup.Dispose();
+        }
+
+        private void btnSaveSettings_Click(object sender, EventArgs e)
+        {
+            saveSettings();
+        }
+
+        public void saveSettings()
+        {
+            settings s = new settings();
+            s.fileLocation = tbExcelFileLocation.Text;
+            s.fileName = tbExcelFileName.Text;
+
+            string res = JsonConvert.SerializeObject(s);
+            StreamWriter sw = new StreamWriter(System.IO.Path.GetDirectoryName(Application.ExecutablePath) + "\\settings.ini");
+            sw.WriteLine(res);
+            sw.Close();
+        }
+
+        public void loadSettings()
+        {
+            if (File.Exists(System.IO.Path.GetDirectoryName(Application.ExecutablePath) + "\\settings.ini"))
+            {
+                //we got a users file, lets get the data
+                StreamReader sr = new StreamReader(System.IO.Path.GetDirectoryName(Application.ExecutablePath) + "\\settings.ini");
+                string jsonData = sr.ReadToEnd();
+                sr.Close();
+                settings s = JsonConvert.DeserializeObject<settings>(jsonData);
+                tbExcelFileLocation.Text = s.fileLocation;
+                tbExcelFileName.Text = s.fileName;
+            }
         }
 
     }
